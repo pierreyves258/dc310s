@@ -13,6 +13,8 @@ def main():
     argparser = argparse.ArgumentParser()
     argparser.set_defaults(cmd=lambda: None, cmd_args=lambda x: [])
     argparser.add_argument('path', type=str, metavar="PATH")
+    argparser.add_argument('output', type=str, metavar="OUTPUT")
+
 
     args = argparser.parse_args()
 
@@ -76,6 +78,5 @@ def main():
     ax1_current.set_ylabel("Current", color='red')
     ax1_current.set_yticks(range(0, max_current + 1, 2))
 
-    plt.show()
-    
+    plt.savefig(args.output)
 main()
