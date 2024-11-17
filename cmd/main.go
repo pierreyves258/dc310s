@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/pierreyves258/psu/psu"
+	"github.com/pierreyves258/psu"
 )
 
 func main() {
