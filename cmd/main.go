@@ -12,11 +12,14 @@ import (
 
 func main() {
 	var tty, file, delimiter string
-	var cutoff float64
+	var cutoff, current, voltage float64
 	flag.StringVar(&tty, "p", "/dev/ttyUSB1", "Serial port")
-	flag.StringVar(&file, "o", "test.csv", "CSV file")
+	flag.StringVar(&file, "o", "/dev/stdout", "CSV file")
 	flag.StringVar(&delimiter, "d", ",", "CSV delimiter")
-	flag.Float64Var(&cutoff, "c", 0.032, "Charge CutOff current")
+	flag.Float64Var(&cutoff, "cut", 0.032, "Charge CutOff current")
+	flag.Float64Var(&current, "c", 1.65, "Charge current")
+	flag.Float64Var(&voltage, "v", 8.4, "Charge voltage")
+
 	flag.Parse()
 
 	dc310s, err := psu.NewPSU(tty)
@@ -36,12 +39,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = dc310s.SetData(psu.SetCurrent, 1.15)
+	err = dc310s.SetData(psu.SetCurrent, current)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = dc310s.SetData(psu.SetVoltage, 8.4)
+	err = dc310s.SetData(psu.SetVoltage, voltage)
 	if err != nil {
 		log.Fatal(err)
 	}
