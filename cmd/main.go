@@ -17,7 +17,7 @@ func main() {
 	flag.StringVar(&file, "o", "/dev/stdout", "CSV file")
 	flag.StringVar(&delimiter, "d", ",", "CSV delimiter")
 	flag.Float64Var(&cutoff, "cut", 0.032, "Charge CutOff current")
-	flag.Float64Var(&current, "c", 1.65, "Charge current")
+	flag.Float64Var(&current, "c", 1.15, "Charge current")
 	flag.Float64Var(&voltage, "v", 8.4, "Charge voltage")
 
 	flag.Parse()
@@ -59,10 +59,12 @@ func main() {
 	for {
 		current, err := dc310s.GetData(psu.GetCurrent)
 		if err != nil {
+			fmt.Println(err)
 			continue
 		}
 		voltage, err := dc310s.GetData(psu.GetVoltage)
 		if err != nil {
+			fmt.Println(err)
 			continue
 		}
 

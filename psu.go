@@ -81,7 +81,13 @@ func (psu *PSU) sendCommand(function string, value interface{}) error {
 	}
 
 	psu.port.ResetInputBuffer() // Flush read buffer
-	_, err := psu.port.Write([]byte(fmt.Sprintf("%s\n", fmt.Sprintf(function, value))))
+	var str string
+	if value != nil {
+		str = fmt.Sprintf("%s\n", fmt.Sprintf(function, value))
+	} else {
+		str = fmt.Sprintf("%s\n", function)
+	}
+	_, err := psu.port.Write([]byte(str))
 	if err != nil {
 		return fmt.Errorf("error write command [%s][%v]", function, value)
 	}
