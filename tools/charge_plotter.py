@@ -4,9 +4,7 @@ import datetime
 import math
 
 from matplotlib import ticker
-from matplotlib.pyplot import figure
 import matplotlib.pyplot as plt
-from matplotlib.ticker import AutoMinorLocator
 
 
 def main():
@@ -49,14 +47,10 @@ def main():
         voltage_series.append(voltage)
         current_series.append(current)
 
-
         min_voltage = math.floor(min(min_voltage, voltage))
         max_voltage = math.ceil(max(max_voltage, voltage))
         min_current = math.floor(min(min_current, current))
         max_current = math.ceil(max(max_current, current))
-
-
-    v_scale_mult = 1
 
     fig, (ax1_current) = plt.subplots(1, 1)
     fig.set_size_inches(8.5, 4)
@@ -67,16 +61,15 @@ def main():
 
     # Voltage
     ax1_voltage.plot(date_series, voltage_series, color='green')
-    ax1_voltage.yaxis.set_major_formatter(ticker.FormatStrFormatter('%g V'))
-    ax1_voltage.set_ylim([min_voltage * v_scale_mult, max_voltage * v_scale_mult])
+    ax1_voltage.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f V'))
+    ax1_voltage.set_ylim([min_voltage, max_voltage])
     ax1_voltage.set_ylabel("Voltage", color='green')
 
     # Current
     ax1_current.plot(date_series, current_series, color='red')
-    ax1_current.yaxis.set_major_formatter(ticker.FormatStrFormatter('%d A'))
+    ax1_current.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f A'))
     ax1_current.set_ylim([min_current, max_current])
     ax1_current.set_ylabel("Current", color='red')
-    ax1_current.set_yticks(range(0, max_current + 1, 2))
 
     plt.savefig(args.output)
 main()

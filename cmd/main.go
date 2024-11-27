@@ -39,17 +39,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = dc310s.SetData(psu.SetCurrent, current)
+	err = dc310s.SetData(psu.SetCurrent, current, true)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = dc310s.SetData(psu.SetVoltage, voltage)
+	err = dc310s.SetData(psu.SetVoltage, voltage, true)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = dc310s.SetData(psu.SetOutput, true)
+	err = dc310s.SetData(psu.SetOutput, true, true)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,7 +82,7 @@ func main() {
 		time.Sleep(1 * time.Second)
 	}
 
-	err = dc310s.SetData(psu.SetOutput, false)
+	err = dc310s.SetData(psu.SetOutput, false, true)
 	if err != nil {
 		log.Fatal(err)
 	}

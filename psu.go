@@ -37,6 +37,14 @@ const (
 	SetOutput          = "OUTP %s"
 )
 
+var setToGet = map[string]string{
+	SetOutput:       GetOutput,
+	SetCurrent:      GetSetpointCurrent,
+	SetVoltage:      GetSetpointVoltage,
+	SetLimitVoltage: GetLimitVoltage,
+	SetLimitCurrent: GetLimitCurrent,
+}
+
 var outputStr = map[bool]string{
 	true:  "ON",
 	false: "OFF",
@@ -65,14 +73,31 @@ func (psu *PSU) Destroy() {
 	psu = nil
 }
 
-func (psu *PSU) SetData(function string, value interface{}) error {
+func (psu *PSU) SetData(function string, value interface{}, ensure bool) error {
+	var err error
+
 	if function == SetOutput {
 		if vBool, ok := value.(bool); ok {
-			return psu.sendCommand(function, outputStr[vBool])
+			err = psu.sendCommand(function, outputStr[vBool])
+		} else {
+			return fmt.Errorf("invalid value %v for bool", value)
 		}
-		return fmt.Errorf("invalid value %v for bool", value)
+	} else {
+		err = psu.sendCommand(function, value)
 	}
-	return psu.sendCommand(function, value)
+
+	if ensure {
+		res, err := psu.GetData(setToGet[function])
+		if err != nil {
+			return err
+		}
+		if res != value {
+			fmt.Printf("%v != %v, retry\n", value, res)
+			psu.SetData(function, value, ensure) // retry
+		}
+	}
+
+	return err
 }
 
 func (psu *PSU) sendCommand(function string, value interface{}) error {
@@ -160,7 +185,6 @@ func (psu *PSU) GetData(function string) (interface{}, error) {
 	case GetVoltage, GetCurrent, GetPower, GetSetpointCurrent, GetSetpointVoltage, GetLimitCurrent, GetLimitVoltage:
 		return strconv.ParseFloat(res, 64)
 	case GetOutput:
-		fmt.Println(res)
 		return res == "ON", nil
 	}
 
